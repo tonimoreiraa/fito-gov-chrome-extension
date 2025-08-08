@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Fito Canábica | Integração GOV.BR",
+  "version": "1.0",
+  "description": "Coleta dados de",
+  "permissions": ["cookies", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
