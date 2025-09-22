@@ -1,5 +1,41 @@
+async function carregarUsuarios() {
+    const select = document.getElementById("userSelect");
+
+    try {
+        const response = await fetch("https://fito-form-gov.dpibrasil.com/users");
+
+        if (!response.ok) {
+            throw new Error("Erro ao carregar usuários");
+        }
+
+        const usuarios = await response.json();
+
+        select.innerHTML = '<option value="">Selecione um usuário</option>';
+
+        usuarios.forEach(usuario => {
+            const option = document.createElement("option");
+            option.value = usuario.id;
+            option.textContent = usuario.name;
+            select.appendChild(option);
+        });
+    } catch (erro) {
+        select.innerHTML = '<option value="">Erro ao carregar usuários</option>';
+        console.error("Erro:", erro);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", carregarUsuarios);
+
 document.getElementById("ler").addEventListener("click", async () => {
     const mensagem = document.getElementById("mensagem");
+    const userSelect = document.getElementById("userSelect");
+
+    if (!userSelect.value) {
+        mensagem.textContent = "Por favor, selecione um usuário";
+        mensagem.className = "erro";
+        return;
+    }
+
     mensagem.textContent = "Enviando...";
     mensagem.className = "";
 
@@ -18,6 +54,7 @@ document.getElementById("ler").addEventListener("click", async () => {
 
         chrome.cookies.getAll({ domain }, async (cookies) => {
         const body = {
+            user_id: userSelect.value,
             cookies: cookies.map((cookie) => ({
             name: cookie.name,
             value: cookie.value,
@@ -43,7 +80,7 @@ document.getElementById("ler").addEventListener("click", async () => {
             );
 
             if (!response.ok) {
-            throw new Error("Erro ao enviar dados");
+                throw new Error("Erro ao enviar dados");
             }
 
             mensagem.textContent = "Cookies enviados com sucesso!";
